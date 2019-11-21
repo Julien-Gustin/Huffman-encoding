@@ -7,6 +7,7 @@
 struct coding_tree_t{
   double frequence; // contient les fréquences du noeuds
   CodingTree *parent; // parents de ce noeuf / feuille
+  CodingTree *racine;
 
   /* Si pas de d'enfant => feuille */
   CodingTree *left; // enfant gauche du noeur ( doit se répartir les pourcentage de ce noeud)
@@ -45,7 +46,7 @@ CodingTree* ctMerge(CodingTree* leftTree, CodingTree* rightTree){
   /* enfants de parents */
   leftTree->parent = parent;
   rightTree->parent = parent;
-  
+
   return parent;
 }
 
