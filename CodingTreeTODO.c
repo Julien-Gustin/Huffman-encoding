@@ -45,7 +45,7 @@ CodingTree* ctMerge(CodingTree* leftTree, CodingTree* rightTree){
   /* enfants de parents */
   leftTree->parent = parent;
   rightTree->parent = parent;
-  
+
   return parent;
 }
 
@@ -63,6 +63,8 @@ void ctFree(CodingTree* tree){
 
   if(tree->right != NULL)
     free(tree->right);
+
+  free(tree);
 
   return;
 }
