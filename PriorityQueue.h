@@ -60,7 +60,6 @@ void pqFree(PriorityQueue* pQueue);
 bool pqInsert(PriorityQueue* pQueue, const void* entry, double priority);
 
 
-
 /* ------------------------------------------------------------------------- *
  * Extract and return the entry with minimum priority.
  *
