@@ -85,4 +85,7 @@ CodingTree* ctHuffman(const double* frequencies){
   short tailleFrequencies = 127;
 
 
+  pqCreate(, )
+
+
 }
