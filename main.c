@@ -168,44 +168,44 @@ static CharVector* readAsciiText(const char* path)
  * RETURN
  * success      true in case of succes, false otherwise
  * ------------------------------------------------------------------------- */
-static bool readAndDecode(const char* inputpath, const CodingTree* tree,
-                          const char* outptPath, unsigned char eof)
-{
-    FILE* output = (!outptPath)? stdout: fopen(outptPath, "wb");
-
-    bool success = true;
-
-    BinarySequence* source = readBinarySequence(inputpath);
-    if(!source)
-    {
-        fprintf(stderr, "Could not read binary sequence from file '%s'.\n",
-                inputpath);
-        fclose(output);
-        return false;
-    }
-
-    CharVector* dest = cvCreate(CHAR_VECTOR_INIT_CAP);
-    if(!dest)
-    {
-        fprintf(stderr, "Constructor `cvCreate` failed.\n");
-        success = false;
-    }
-
-    success = success && decode(source, dest, tree, eof);
-
-    if(!success)
-        fprintf(stderr, "Could not decode binary sequence from file '%s'.\n",
-                inputpath);
-    else
-        for(size_t i=0; i < cvSize(dest); i++)
-            fprintf(output, "%c", cvGet(dest, i));
-
-
-    biseFree(source);
-    cvFree(dest);
-    fclose(output);
-    return success;
-}
+// static bool readAndDecode(const char* inputpath, const CodingTree* tree,
+//                           const char* outptPath, unsigned char eof)
+// {
+//     FILE* output = (!outptPath)? stdout: fopen(outptPath, "wb");
+//
+//     bool success = true;
+//
+//     BinarySequence* source = readBinarySequence(inputpath);
+//     if(!source)
+//     {
+//         fprintf(stderr, "Could not read binary sequence from file '%s'.\n",
+//                 inputpath);
+//         fclose(output);
+//         return false;
+//     }
+//
+//     CharVector* dest = cvCreate(CHAR_VECTOR_INIT_CAP);
+//     if(!dest)
+//     {
+//         fprintf(stderr, "Constructor `cvCreate` failed.\n");
+//         success = false;
+//     }
+//
+//     success = success && decode(source, dest, tree, eof);
+//
+//     if(!success)
+//         fprintf(stderr, "Could not decode binary sequence from file '%s'.\n",
+//                 inputpath);
+//     else
+//         for(size_t i=0; i < cvSize(dest); i++)
+//             fprintf(output, "%c", cvGet(dest, i));
+//
+//
+//     biseFree(source);
+//     cvFree(dest);
+//     fclose(output);
+//     return success;
+// }
 
 
 /* ------------------------------------------------------------------------- *
@@ -224,6 +224,7 @@ static bool readAndDecode(const char* inputpath, const CodingTree* tree,
 static bool readAndEncode(const char* inputpath, const CodingTree* tree,
                           const char* outptPath, bool debug, unsigned char eof)
 {
+
     FILE* output = (!outptPath)? stdout: fopen(outptPath, "wb");
 
     bool success = true;
@@ -272,6 +273,7 @@ static bool readAndEncode(const char* inputpath, const CodingTree* tree,
             }
 
         } else {
+            printf("bits %ld\n", biseGetNumberOfBytes(dest));
             for(size_t i=0; i < biseGetNumberOfBytes(dest); i++) {
                 unsigned char currByte = biseGetByte(dest, i, ZERO);
                 fwrite(&currByte, sizeof(unsigned char), 1, output);
@@ -371,10 +373,10 @@ int main(int argc, char** argv)
     /* ----------------------------- (DE)CODING ----------------------------- */
     bool success;
     if(decode)
-        success = readAndDecode(textPath, huffmanTree, outputPath, eofChar);
+        //success = readAndDecode(textPath, huffmanTree, outputPath, eofChar);
+        printf("yo");
     else
         success = readAndEncode(textPath, huffmanTree, outputPath, debug, eofChar);
-
 
     free(frequencies);
     ctFree(huffmanTree);
