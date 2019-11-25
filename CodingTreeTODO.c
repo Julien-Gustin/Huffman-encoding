@@ -5,6 +5,7 @@
 #include "CodingTree.h"
 #include "PriorityQueue.h"
 #include "BinarySequence.h"
+static const size_t ASCII_SIZE = 127;
 
 /* ------------------------------------------------------------------------- *
  * Remplis par recursion le nombre binaire associé à chaque feuilles
@@ -59,7 +60,7 @@ CodingTree* ctMerge(CodingTree* leftTree, CodingTree* rightTree){
   CodingTree *parent = ctCreateLeaf(-1, leftTree->frequence + rightTree->frequence);
   if(parent ==  NULL)
     return NULL;
-  printf("[%d][%d]", leftTree->caractere, rightTree->caractere);
+  //printf("[%d][%d]", leftTree->caractere, rightTree->caractere);
   /* parent des deux arbres données en arguments */
   parent->left = leftTree;
   parent->right = rightTree;
@@ -71,31 +72,35 @@ CodingTree* ctMerge(CodingTree* leftTree, CodingTree* rightTree){
   return parent;
 }
 
-void ctFree(CodingTree* tree){
-  if(tree == NULL)
-    return;
-
-  /* on libere que si l'espace associe n'est pas vide */
-  if(tree->parent != NULL)
-    free(tree->parent);
-
-  if(tree->left != NULL)
-    free(tree->left);
-
-  if(tree->right != NULL)
-    free(tree->right);
-
-  if(tree->binary != NULL)
-    biseFree(tree->binary);
-
-  return;
-}
+// void ctFree(CodingTree* tree){
+//   if(tree == NULL)
+//     return;
+//
+//   /* on libere que si l'espace associe n'est pas vide */
+//
+//
+//   if(tree->parent != NULL)
+//     free(tree->parent);
+//
+//   if(tree->left != NULL)
+//     free(tree->left);
+//
+//   if(tree->right != NULL)
+//     free(tree->right);
+//
+//   if(tree->binary != NULL)
+//     biseFree(tree->binary);
+//
+//
+//
+//   return;
+// }
 
 /* ------------------------------------------------------------------------- *
  * Create the optimal coding tree with the Huffman algorithm.
  *
  * PARAMETERS
- * frequencies  An array of size 127, such that frequencies[i] is the frequency
+ * frequencies  An array of size ASCII_SIZE, such that frequencies[i] is the frequency
  *              of the ith ascii character
  *
  * NOTE
@@ -105,7 +110,7 @@ void ctFree(CodingTree* tree){
  * tree         The coding tree, or NULL in case of error
  * ------------------------------------------------------------------------- */
 CodingTree* ctHuffman(const double* frequencies){
-  size_t tailleFrequencies = 127;
+  size_t tailleFrequencies = ASCII_SIZE;
   CodingTree **racines = malloc(sizeof(CodingTree*)*tailleFrequencies);
   if(racines == NULL){
     free(racines);
@@ -132,10 +137,14 @@ CodingTree* ctHuffman(const double* frequencies){
   }
 
   for(size_t i = 0; i < tailleFrequencies-1; i++){
-    CodingTree *z = ctMerge((CodingTree*)(pqExtractMin(pq)), (CodingTree*)(pqExtractMin(pq)));
+    CodingTree *leftTree = (CodingTree*)(pqExtractMin(pq));
+    CodingTree *rightTree = (CodingTree*)(pqExtractMin(pq));
+
+    CodingTree *z = ctMerge(leftTree, rightTree);
+
     if(z == NULL){
       for(size_t j = 0; j < tailleFrequencies; j++)
-        ctFree(racines[i]);
+        ctFree(racines[j]);
 
       ctFree(z);
       pqFree(pq);
@@ -143,9 +152,13 @@ CodingTree* ctHuffman(const double* frequencies){
     }
 
     pqInsert(pq, z, z->frequence); //on insere la racine carré dans la queue
-  }
 
-  return (CodingTree*)(pqExtractMin(pq)); // on return le dernier element, soit l'arbre entier
+  }
+  CodingTree *returned = (CodingTree*)(pqExtractMin(pq));
+
+  free(racines);
+  pqFree(pq);
+  return returned; // on return le dernier element, soit l'arbre entier
 }
 
 void ctPrint(CodingTree *tree, int i, char* yo){
@@ -167,8 +180,43 @@ void ctPrint(CodingTree *tree, int i, char* yo){
     ctPrint(tree->right, i+1, "droite");
 }
 
+void ctFree(CodingTree *tree){
+  if(tree->left != NULL){
+    CodingTree *tmpLeft = tree->left;
+    ctFree(tmpLeft);
+  }
+
+  if(tree->right != NULL){
+    CodingTree *tmpRight = tree->right;
+    ctFree(tmpRight);
+  }
+
+  if(tree->caractere == -1)
+    biseFree(tree->binary);
+
+  free(tree);
+  return;
+}
+
+// void ctFree(CodingTree *tree){
+//   if(tree == NULL)
+//     return;
+//
+//   if(tree->left != NULL)
+//     ctFree(tree->left);
+//
+//   if(tree->right != NULL)
+//     ctFree(tree->right);
+//
+//   if(tree->left == NULL && tree->right == NULL){
+//     free(tree);
+//
+//     return;
+//   }
+// }
+
 /* ------------------------------------------------------------------------- *
- * Return an array of size 127 which maps ascii character their corresponding
+ * Return an array of size ASCII_SIZE which maps ascii character their corresponding
  * code.
  *
  * PARAMETERS
@@ -184,22 +232,11 @@ void ctPrint(CodingTree *tree, int i, char* yo){
  * ------------------------------------------------------------------------- */
 BinarySequence** ctCodingTable(const CodingTree* tree){
 
-  BinarySequence **bs = malloc(sizeof(BinarySequence*) *127);
+  BinarySequence **bs = malloc(sizeof(BinarySequence*) *ASCII_SIZE);
   if(bs == NULL){
     free(bs);
     //ctFree(tree);
     return NULL;
-  }
-
-  for(size_t i = 0; i < 127; i++){
-    bs[i] = biseCreate();
-    if(bs[i] == NULL){
-      for(size_t j = 0; j <= i; j++)
-        biseFree(bs[i]);
-
-      //ctFree(tree);
-      return NULL;
-    }
   }
 
   reccBinary(tree, bs);
@@ -207,9 +244,11 @@ BinarySequence** ctCodingTable(const CodingTree* tree){
 }
 
 static void reccBinary(const CodingTree *tree, BinarySequence **bs){
-  if(tree->parent != NULL) // on copy la sequence du parents et on la met à l'enfant
-    biseAddSequence(tree->binary, biseCopy(tree->parent->binary));
-
+  if(tree->parent != NULL){ // on copy la sequence du parents et on la met à l'enfant
+  BinarySequence *tmp = biseCopy(tree->parent->binary);
+    biseAddSequence(tree->binary, tmp);
+    biseFree(tmp);
+  }
 
   if(tree->left != NULL){ // si à gauche on rajoute un 0 à la fin de la sequence
     biseAddBit(tree->left->binary, 0);
@@ -227,3 +266,32 @@ static void reccBinary(const CodingTree *tree, BinarySequence **bs){
     return;
   }
 }
+
+// static char ctDecodeRecc(const CodingTree* tree, const BinarySequence *encodedSequence){
+//   int check = 1;
+//   if(tree->left != NULL)
+//     ctDecode(tree->left, encodedSequence);
+//
+//   if(tree->right != NULL)
+//     ctDecode(tree->right, encodedSequence);
+//
+//   if(tree->right == NULL && tree->left == NULL){
+//     if(biseGetNumberOfBits(tree->binary) == biseGetNumberOfBits(encodedSequence)){
+//       for(size_t i = 0; i < biseGetNumberOfBits(tree->binary); i++){
+//         if(biseGetBit(tree->binary, i) != biseGetBit(encodedSequence, i))
+//           check = 0;
+//
+//         if(check)
+//           return tree->caractere;
+//       }
+//     }
+//   }
+// }
+//
+// Decoded ctDecode(const CodingTree* tree, const BinarySequence* encodedSequence, size_t start){
+//   char caractere = ctDecodeRecc(tree, encodedSequence);
+//   Decoded lettre;
+//   lettre.caractere = caractere;
+//   lettre.nextBit = start + biseGetNumberOfBits(encodedSequence);
+//   return lettre;
+// }

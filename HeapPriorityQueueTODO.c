@@ -100,7 +100,6 @@ PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t l
       return NULL;
     }
   }
-
   return pq;
 }
 
@@ -145,8 +144,6 @@ const void* pqExtractMin(PriorityQueue* pQueue){
   pQueue->heap_size--;
   Min_Heapify(pQueue, 0); // reconstruit le tas
 
-   //if(pQueue->heap_size == 0)
-  //   pqFree(pQueue);
   return min;
 }
 
