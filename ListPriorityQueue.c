@@ -8,7 +8,7 @@
 static List *pqFree_rec(List *current);
 
 struct list_t{
-  void *entries;
+  const void *entries;
   double priorities;
   List *next;
 };
