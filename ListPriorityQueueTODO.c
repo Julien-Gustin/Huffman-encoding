@@ -137,3 +137,7 @@ void pqFree(PriorityQueue* pQueue){
   }
   free(pQueue);
 }//fin pqFree
+
+size_t pqSize(const PriorityQueue* pQueue){
+  return pQueue->length;
+}
