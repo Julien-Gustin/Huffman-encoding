@@ -11,6 +11,9 @@
 /* Opaque structure */
 typedef struct priority_queue_t PriorityQueue;
 
+typedef struct list_t List;
+
+
 
 /* ------------------------------------------------------------------------- *
  * Build a priority queue with the given entries. The capacity of the queue
