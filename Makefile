@@ -4,7 +4,7 @@ LD=gcc
 LDFLAGS=
 
 # Files
-EXEC=prog
+EXEC=huffman
 MODULESHEAP=main.c BinarySequence.c CharVector.c CodingTree.c decoding.c coding.c HeapPriorityQueue.c
 OBJECTSHEAP=main.o BinarySequence.o CharVector.o CodingTree.o decoding.o coding.o HeapPriorityQueue.o
 
@@ -48,7 +48,7 @@ CharVector.o: CharVector.c
 
 
 c:	$(EXEC)
-	./$(EXEC) -e -o text.txt Alice_in_worderland_Lewis_Carroll.ascii freq.csv
+	valgrind ./$(EXEC) -e -o text.txt Alice_in_worderland_Lewis_Carroll.ascii freq.csv
 
 
 d:	$(EXEC)
