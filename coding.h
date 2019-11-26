@@ -44,6 +44,6 @@ bool encode(const CharVector* source, BinarySequence* dest, const CodingTree* tr
  * RETURN
  * success    True on success, false on error
  * ------------------------------------------------------------------------- */
-//bool decode(const BinarySequence* source, CharVector* dest, const CodingTree* tree, unsigned char eof);
+bool decode(const BinarySequence* source, CharVector* dest, const CodingTree* tree, unsigned char eof);
 
 #endif // _CODING_H_

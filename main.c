@@ -191,19 +191,19 @@ static bool readAndDecode(const char* inputpath, const CodingTree* tree,
         success = false;
     }
 
-    // success = success && decode(source, dest, tree, eof);
-    //
-    // if(!success)
-    //     fprintf(stderr, "Could not decode binary sequence from file '%s'.\n",
-    //             inputpath);
-    // else
-    //     for(size_t i=0; i < cvSize(dest); i++)
-    //         fprintf(output, "%c", cvGet(dest, i));
-    //
-    //
-    // biseFree(source);
-    // cvFree(dest);
-    printf("%d\n", biseGetNumberOfBits(source));
+    success = success && decode(source, dest, tree, eof);
+
+    if(!success)
+        fprintf(stderr, "Could not decode binary sequence from file '%s'.\n",
+                inputpath);
+    else
+        for(size_t i=0; i < cvSize(dest); i++)
+            fprintf(output, "%c", cvGet(dest, i));
+
+
+    biseFree(source);
+    cvFree(dest);
+    //printf("%ld %ld\n", biseGetNumberOfBits(source), cvSize(dest));
     fclose(output);
     return success;
 }
@@ -274,7 +274,6 @@ static bool readAndEncode(const char* inputpath, const CodingTree* tree,
             }
 
         } else {
-            printf("bits %ld\n", biseGetNumberOfBytes(dest));
             for(size_t i=0; i < biseGetNumberOfBytes(dest); i++) {
                 unsigned char currByte = biseGetByte(dest, i, ZERO);
                 fwrite(&currByte, sizeof(unsigned char), 1, output);
