@@ -171,6 +171,6 @@ Decoded ctDecode(const CodingTree* tree, const BinarySequence* encodedSequence, 
   if(biseGetBit(encodedSequence, start) == 0)
     return(ctDecode(tree->left, encodedSequence, start+1));
 
-    return(ctDecode(tree->right, encodedSequence, start+1));
+  return(ctDecode(tree->right, encodedSequence, start+1));
 
 }
