@@ -48,7 +48,7 @@ PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t l
 bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
   A->length++; //TODO
 
-  size_t i = A->length-1;
+  // size_t i = A->length-1;
 
   List *new_cell = malloc(sizeof(List));
   if(new_cell == NULL)
