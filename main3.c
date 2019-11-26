@@ -37,5 +37,6 @@ int main(){
 
   while(tmp->next != NULL){
     printf("[%lf]", tmp->priorities);
+    tmp = tmp->next
   }
 }
