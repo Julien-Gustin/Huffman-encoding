@@ -5,8 +5,6 @@
 
 #include "PriorityQueue.h"
 
-static List *pqFree_rec(List *current);
-
 struct list_t{
   const void *entries;
   double priorities;
@@ -19,6 +17,22 @@ struct priority_queue_t{
   size_t length;
 };
 
+double get_priorities(List *list){
+   return list->priorities;
+}
+
+List* get_next(List *list){
+   return list->next;;
+}
+
+List* get_head(PriorityQueue *pq){
+   return pq->head;
+}
+
+List* get_end(PriorityQueue *pq){
+   return pq->end;
+}
+
 PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t length){
 
   PriorityQueue *pq = malloc(sizeof(PriorityQueue));
@@ -29,14 +43,18 @@ PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t l
 
   pq->length = 0;
   pq->head = NULL;
+  pq->head->next = NULL;
   pq->end = NULL;
 
   for(size_t i = 0; i < length; i++){
     //si l'insertion se passe mal
     if(pqInsert(pq, entries[i], priorities[i] != true)){
+      printf(" coucou\n");
 
-      for(size_t j = 0; j < pq->length; j++)
+      for(size_t j = 0; j < pq->length; j++){
         pqExtractMin(pq);
+        printf(" coucou\n");
+      }
 
       pqFree(pq);
       return NULL;
@@ -56,30 +74,32 @@ bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
 
   new_cell->entries = entry;
   new_cell->priorities = priorities;
+  new_cell->next = NULL;
 
   //si la queue est vide ou si l'élément à placer a une priorité supérieure que le premier élément
-  if(A->head == NULL || A->head->priorities < priorities){
+  if(A->head == NULL || A->head->priorities > priorities){
     new_cell->next = A->head;
     A->head = new_cell;
-
-    return true;
   }
 
   else{
-    List *tmp = malloc(sizeof(List));
-    if(tmp == NULL)
+    List *prev = NULL;
+    List *current = malloc(sizeof(List));
+    if(current == NULL)
       return NULL;
 
-    tmp = A->head;
+    current = A->head->next;
 
-		while( tmp->next != NULL && tmp->next->priorities <= priorities)
-		  tmp = tmp->next;
+		while(priorities >= current->priorities){
+      prev = current;
+      current = current->next;
+    }
 
-		new_cell->next = tmp->next;
-		tmp->next = new_cell;
+    new_cell->next = current;
+    prev->next = new_cell;
 
-    return true;
   }
+  return true;
 }//fin pqInsert
 
 const void* pqExtractMin(PriorityQueue* pQueue){
@@ -90,52 +110,29 @@ const void* pqExtractMin(PriorityQueue* pQueue){
   if(min == NULL)
     return NULL;
 
-  List *current = malloc(sizeof(List));
-  if(current == NULL)
-    return NULL;
-
   List *tmp = malloc(sizeof(List));
   if(tmp == NULL)
     return NULL;
 
+
+  tmp = pQueue->head->next;
   min = pQueue->head;
-  current = pQueue->head;
 
-
-  while(current->next != NULL){
-    if(current->priorities > current->next->priorities){
-      min = current->next;
-      tmp = current;
-    }
-    current = current->next;
-
-  }
-  tmp->next = min->next;
-  free(min);
+  pQueue->head = tmp;
 
   return min;
 }//fin pqExtractMin
 
-static List *pqFree_rec(List *current){
-   List *tmp = current->next;
-   //Le cas de base c'est quand on arrive à la dernière escale de la liste
-   if(tmp == NULL)
-      return current;
-   //on détruit les données de la cellule actuelle
-   free(current);
-
-   return pqFree_rec(tmp);
-}//fin pqFree_rec
-
 void pqFree(PriorityQueue* pQueue){
-  if(pQueue->head != NULL){
     List *current = pQueue->head;
-    //récupère la dernière escale
-    current = pqFree_rec(current);
-    //on détruit ainsi la dernière donnée
-    free(current);
-  }
-  free(pQueue);
+    List *tmp = malloc(sizeof(List));
+
+    while(current != NULL){
+      tmp = current;
+      free(current);
+      current = tmp->next;
+    }
+    free(pQueue);
 }//fin pqFree
 
 size_t pqSize(const PriorityQueue* pQueue){
