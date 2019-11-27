@@ -36,24 +36,21 @@ List* get_end(PriorityQueue *pq){
 PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t length){
 
   PriorityQueue *pq = malloc(sizeof(PriorityQueue));
-  if(pq == NULL){
+  if(pq == NULL)
      return NULL;
-     printf("coucou\n" );
-  }
+
 
   pq->length = 0;
   pq->head = NULL;
-  pq->head->next = NULL;
+//  pq->head->next = NULL;
   pq->end = NULL;
 
   for(size_t i = 0; i < length; i++){
     //si l'insertion se passe mal
-    if(pqInsert(pq, entries[i], priorities[i] != true)){
-      printf(" coucou\n");
+    if(!pqInsert(pq, entries[i], priorities[i])){
 
       for(size_t j = 0; j < pq->length; j++){
         pqExtractMin(pq);
-        printf(" coucou\n");
       }
 
       pqFree(pq);
@@ -65,32 +62,45 @@ PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t l
 
 bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
   A->length++; //TODO
-
   // size_t i = A->length-1;
 
   List *new_cell = malloc(sizeof(List));
   if(new_cell == NULL)
-    return NULL;
+    return false;
 
   new_cell->entries = entry;
   new_cell->priorities = priorities;
   new_cell->next = NULL;
 
   //si la queue est vide ou si l'élément à placer a une priorité supérieure que le premier élément
-  if(A->head == NULL || A->head->priorities > priorities){
-    new_cell->next = A->head;
+  if(A->head == NULL || A->head->priorities >= priorities){
+    if(A->head == NULL){
+      A->end = new_cell;
+      A->end->next = NULL;
+    }
+
+    else
+      new_cell->next = A->head;
+
     A->head = new_cell;
+
+  }
+
+  else if(A->end->priorities <= priorities){
+    A->end->next = new_cell;
+    A->end = new_cell;
   }
 
   else{
     List *prev = NULL;
     List *current = malloc(sizeof(List));
     if(current == NULL)
-      return NULL;
+      return false;
 
     current = A->head->next;
+    prev = A->head;
 
-		while(priorities >= current->priorities){
+		while(priorities > current->priorities && current != A->end){
       prev = current;
       current = current->next;
     }
@@ -120,7 +130,7 @@ const void* pqExtractMin(PriorityQueue* pQueue){
 
   pQueue->head = tmp;
 
-  return min;
+  return min->entries;
 }//fin pqExtractMin
 
 void pqFree(PriorityQueue* pQueue){

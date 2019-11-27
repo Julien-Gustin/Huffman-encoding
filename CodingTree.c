@@ -9,8 +9,9 @@ static const size_t ASCII_SIZE = 127;
 
 
 /* ------------------------------------------------------------------------- *
- * Trouve l'équivalant binaire pour chaque caractere, en traversant l'arbre dans son entierté de tel
- *       maniere que si on passe par l'enfant gauche on met un 0,et 1 si on passe à droite, et stocke la suite de bit dans le tableau
+ * Trouve l'équivalant binaire pour chaque caractere, en traversant l'arbre dans
+ * son entierté de tel maniere que si on passe par l'enfant gauche on met un 0,
+ * et 1 si on passe à droite, et stocke la suite de bit dans le tableau
  *
  * PARAMETERS
  * tree     la structure, coding tree
@@ -20,17 +21,15 @@ static const size_t ASCII_SIZE = 127;
 static void reccBinary(const CodingTree *tree, BinarySequence **bs);
 
 struct coding_tree_t{
-  double frequence; // contient les fréquences du noeuds
-  CodingTree *racine;
 
   /* Si pas de d'enfant => feuille */
-  CodingTree *left; // enfant gauche du noeur ( doit se répartir les pourcentage de ce noeud)
-  CodingTree *right; // enfant droite du noeur ( doit se répartir les pourcentage de ce noeud)
+  CodingTree *left; // enfant gauche du noeud
+  CodingTree *right; // enfant droite du noeud
 
-  /* Si pas de caractere => noeud */
-  char caractere;
+  /* data */
+  double frequence; // contient les fréquences du noeuds
+  char caractere; // si caractere == -1 => noeud != feuile
   BinarySequence *binary;
-
 };
 
 CodingTree* ctCreateLeaf(char c, double frequency){
@@ -44,8 +43,6 @@ CodingTree* ctCreateLeaf(char c, double frequency){
 
   feuille->left = NULL; //init les enfants à NULL
   feuille->right = NULL;
-
-  feuille->racine = feuille;
 
   return feuille;
 }
