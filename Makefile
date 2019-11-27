@@ -1,11 +1,11 @@
-CC=gcc
+CC=@ gcc
 CFLAGS=--std=c99 --pedantic -Wall -Wextra -Wmissing-prototypes -g
-LD=gcc
+LD=@ gcc
 LDFLAGS=
 
 # Files
 EXEC=huffman
-MODULESHEAP=main.c BinarySequence.c CharVector.c CodingTree.c decoding.c coding.c HeapPriorityQueue.c
+@MODULESHEAP=main.c BinarySequence.c CharVector.c CodingTree.c decoding.c coding.c HeapPriorityQueue.c
 OBJECTSHEAP=main.o BinarySequence.o CharVector.o CodingTree.o decoding.o coding.o HeapPriorityQueue.o
 
 
