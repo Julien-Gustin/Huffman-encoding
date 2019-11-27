@@ -7,11 +7,20 @@
 #include "BinarySequence.h"
 static const size_t ASCII_SIZE = 127;
 
+
+/* ------------------------------------------------------------------------- *
+ * Trouve l'équivalant binaire pour chaque caractere, en traversant l'arbre dans son entierté de tel
+ *       maniere que si on passe par l'enfant gauche on met un 0,et 1 si on passe à droite, et stocke la suite de bit dans le tableau
+ *
+ * PARAMETERS
+ * tree     la structure, coding tree
+ * bs       tableau de pointeur vers la structure BinarySequence
+ *
+ * ------------------------------------------------------------------------- */
 static void reccBinary(const CodingTree *tree, BinarySequence **bs);
 
 struct coding_tree_t{
   double frequence; // contient les fréquences du noeuds
-  CodingTree *parent; // parents de ce noeuf / feuille
   CodingTree *racine;
 
   /* Si pas de d'enfant => feuille */
@@ -33,8 +42,7 @@ CodingTree* ctCreateLeaf(char c, double frequency){
   feuille->caractere = c;
   feuille->binary = biseCreate();
 
-  feuille->parent = NULL;
-  feuille->left = NULL;
+  feuille->left = NULL; //init les enfants à NULL
   feuille->right = NULL;
 
   feuille->racine = feuille;
@@ -52,16 +60,12 @@ CodingTree* ctMerge(CodingTree* leftTree, CodingTree* rightTree){
   parent->left = leftTree;
   parent->right = rightTree;
 
-  /* enfants de parents */
-  leftTree->parent = parent;
-  rightTree->parent = parent;
-
   return parent;
 }
 
 CodingTree* ctHuffman(const double* frequencies){
   size_t tailleFrequencies = ASCII_SIZE;
-  CodingTree **racines = malloc(sizeof(CodingTree*)*tailleFrequencies);
+  CodingTree **racines = malloc(sizeof(CodingTree*)*tailleFrequencies); // crée un tableau de racine contenant les caractere avec leurs fréquence
   if(racines == NULL){
     free(racines);
     return NULL;
@@ -77,7 +81,7 @@ CodingTree* ctHuffman(const double* frequencies){
     }
   }
 
-  PriorityQueue *pq = pqCreate((void*)(racines), frequencies, tailleFrequencies);
+  PriorityQueue *pq = pqCreate((void*)(racines), frequencies, tailleFrequencies); // priotity queue min
   if(pq == NULL){
     for(size_t i = 0; i < tailleFrequencies; i++)
       ctFree(racines[i]);
@@ -86,11 +90,11 @@ CodingTree* ctHuffman(const double* frequencies){
     return NULL; //free tab
   }
 
-  for(size_t i = 0; i < tailleFrequencies-1; i++){
+  for(size_t i = 0; i < tailleFrequencies-1; i++){ // Huffman algorithm
     CodingTree *leftTree = (CodingTree*)(pqExtractMin(pq));
     CodingTree *rightTree = (CodingTree*)(pqExtractMin(pq));
 
-    CodingTree *z = ctMerge(leftTree, rightTree);
+    CodingTree *z = ctMerge(leftTree, rightTree); // créer une racine avec comme enfants, les 2 elements minimum de la priority queue
 
     if(z == NULL){
       for(size_t j = 0; j < tailleFrequencies; j++)
@@ -101,7 +105,7 @@ CodingTree* ctHuffman(const double* frequencies){
       return NULL;
     }
 
-    pqInsert(pq, z, z->frequence); //on insere la racine carré dans la queue
+    pqInsert(pq, z, z->frequence); //on insere la racine cree dans la queue
 
   }
   CodingTree *returned = (CodingTree*)(pqExtractMin(pq));
@@ -122,7 +126,7 @@ void ctFree(CodingTree *tree){
     ctFree(tmpRight);
   }
 
-  if(tree->caractere == -1)
+  if(tree->caractere == -1) // pour l'encodage
     biseFree(tree->binary);
 
   free(tree);
@@ -136,7 +140,7 @@ BinarySequence** ctCodingTable(const CodingTree* tree){
     free(bs);
     return NULL;
   }
-  reccBinary(tree, bs);
+  reccBinary(tree, bs); //remplit le tableau de pointeurs bs
   return bs;
 }
 

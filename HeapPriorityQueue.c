@@ -20,11 +20,41 @@ struct priority_queue_t{
  * i            Indice du premier éléments
  * j            Indice du second éléments
  * ------------------------------------------------------------------------- */
-static void swap(void **array, size_t i, size_t j);
-static size_t Parent(size_t i);
+static inline void swap(void **array, size_t i, size_t j);
+
+/* ------------------------------------------------------------------------- *
+ * Retourne le parent de i de l'arbre binaire
+ *
+ * PARAMETRES
+ * i       Le noeud i de l'arbre binaire
+ * ------------------------------------------------------------------------- */
+static inline size_t Parent(size_t i);
+
+/* ------------------------------------------------------------------------- *
+ * Rétablit la propriété des tas(pour tout i, en tenant compte du fait que les
+ * sous-arbres de droite et de gauche sont des tas
+ *
+ * PARAMETRES
+ * array        Tableau d'entier
+ * heap_size     La taille du tas
+ * ------------------------------------------------------------------------- */
 static void Min_Heapify(PriorityQueue *A, size_t i);
-static size_t Left(size_t i);
-static size_t Right(size_t i);
+
+/* ------------------------------------------------------------------------- *
+ * Retourne le fils gauche du noeud i de l'arbre binaire
+ *
+ * PARAMETRES
+ * i       Le noeud i de l'arbre binaire
+ * ------------------------------------------------------------------------- */
+static inline size_t Left(size_t i);
+
+/* ------------------------------------------------------------------------- *
+ * Retourne le fils droit du noeud i de l'arbre binaire
+ *
+ * PARAMETRES
+ * i       Le noeud i de l'arbre binaire
+ * ------------------------------------------------------------------------- */
+static inline size_t Right(size_t i);
 
 static void Min_Heapify(PriorityQueue *A, size_t i){
 
@@ -48,24 +78,25 @@ static void Min_Heapify(PriorityQueue *A, size_t i){
   }
 }
 
-static size_t Left(size_t i){
+static inline size_t Left(size_t i){
   return 2*i;
 
 }
 
-static size_t Right(size_t i){
+static inline size_t Right(size_t i){
   return ((2*i)+1);
 
 }
 
-static size_t Parent(size_t i){
+static inline size_t Parent(size_t i){
   if(i == 0)
     printf("ERREUR\n");
+
   return (i/2);
 
 }
 
-static void swap(void **array, size_t i, size_t j){
+static inline void swap(void **array, size_t i, size_t j){
   void *tmp = array[i];
   array[i] = array[j];
   array[j] = tmp;
@@ -76,13 +107,13 @@ PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t l
   if(pq == NULL)
     return NULL;
 
-  pq->entries = malloc(sizeof(void*)*length);
+  pq->entries = malloc(sizeof(void*)*length); // aloue de la mémoire pour un tableau de pointeur sur void
   if(pq->entries == NULL){
     pqFree(pq);
     return NULL;
   }
 
-  pq->priorities = malloc(sizeof(double)*length);
+  pq->priorities = malloc(sizeof(double)*length); // aloue de la mémoire pour un tableau de priorities
   if(pq->priorities == NULL){
     pqFree(pq);
     return NULL;
@@ -105,8 +136,8 @@ PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t l
 
 bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
   A->heap_size++;
+
   if(A->heap_size > A->length){
-    printf("ERREUR\n");
     return false;
   }
 
@@ -133,14 +164,14 @@ void pqFree(PriorityQueue* pQueue){
 
 const void* pqExtractMin(PriorityQueue* pQueue){
   if(pqSize(pQueue) < 1){
-    printf("Erreur, heap underflow");
     pqFree(pQueue);
-    return NULL;
+    return NULL; //underflow
   }
 
   void* min = pQueue->entries[0];
   pQueue->entries[0] = pQueue->entries[pqSize(pQueue)-1];
   pQueue->priorities[0] = pQueue->priorities[pqSize(pQueue)-1];
+
   pQueue->heap_size--;
   Min_Heapify(pQueue, 0); // reconstruit le tas
 
