@@ -59,8 +59,7 @@ PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t l
 }//fin pqCreate()
 
 bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
-  A->length++; //TODO
-  // size_t i = A->length-1;
+  A->length++;
 
   List *new_cell = malloc(sizeof(List));
   if(new_cell == NULL)
@@ -96,7 +95,7 @@ bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
     current = A->head->next;
     prev = A->head;
 
-		while(priorities > current->priorities && current != A->end){
+		while(priorities > current->priorities){
       prev = current;
       current = current->next;
     }
@@ -126,7 +125,7 @@ const void* pqExtractMin(PriorityQueue* pQueue){
 
 void pqFree(PriorityQueue* pQueue){
     List *current = pQueue->head;
-    List *tmp = malloc(sizeof(List));
+    List *tmp = NULL;
 
     while(current != NULL){
       tmp = current;
