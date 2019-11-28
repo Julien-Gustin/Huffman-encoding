@@ -108,6 +108,4 @@ BinarySequence** ctCodingTable(const CodingTree* tree);
 Decoded ctDecode(const CodingTree* tree, const BinarySequence* encodedSequence,
                  size_t start);
 
-void ctPrint(CodingTree *tree, int i, char *yo);
-
 #endif // _CODING_TREE_H_

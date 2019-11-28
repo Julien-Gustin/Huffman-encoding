@@ -113,14 +113,15 @@ const void* pqExtractMin(PriorityQueue* pQueue){
 
   List *min;
 
-  List *tmp;
-
-  tmp = pQueue->head->next;
   min = pQueue->head;
 
-  pQueue->head = tmp;
+  pQueue->head = min->next;
 
-  return min->entries;
+  const void *tmp2 = min->entries;
+
+  free(min);
+
+  return tmp2;
 }//fin pqExtractMin
 
 void pqFree(PriorityQueue* pQueue){

@@ -48,11 +48,11 @@ CharVector.o: CharVector.c
 
 
 c:	$(EXEC)
-	valgrind ./$(EXEC) -e -o text.txt Alice_in_worderland_Lewis_Carroll.ascii freq.csv
+	valgrind --leak-check=full ./$(EXEC) -e -o text.txt Alice_in_worderland_Lewis_Carroll.ascii freq.csv
 
 
 d:	$(EXEC)
-	./$(EXEC) -o text2.txt text.txt freq.csv
+	valgrind --leak-check=full ./$(EXEC) -o text2.txt text.txt freq.csv
 
 
 clean:
