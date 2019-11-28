@@ -39,10 +39,8 @@ PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t l
   if(pq == NULL)
      return NULL;
 
-
   pq->length = 0;
   pq->head = NULL;
-//  pq->head->next = NULL;
   pq->end = NULL;
 
   for(size_t i = 0; i < length; i++){
@@ -92,10 +90,8 @@ bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
   }
 
   else{
-    List *prev = NULL;
-    List *current = malloc(sizeof(List));
-    if(current == NULL)
-      return false;
+    List *prev;
+    List *current;
 
     current = A->head->next;
     prev = A->head;
@@ -116,14 +112,9 @@ const void* pqExtractMin(PriorityQueue* pQueue){
   if(pQueue == NULL)
   return NULL;
 
-  List *min = malloc(sizeof(List));
-  if(min == NULL)
-    return NULL;
+  List *min;
 
-  List *tmp = malloc(sizeof(List));
-  if(tmp == NULL)
-    return NULL;
-
+  List *tmp;
 
   tmp = pQueue->head->next;
   min = pQueue->head;
