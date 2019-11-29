@@ -18,7 +18,7 @@ static const size_t ASCII_SIZE = 127;
  * bs       tableau de pointeur vers la structure BinarySequence
  *
  * ------------------------------------------------------------------------- */
-static void reccBinary(const CodingTree *tree, BinarySequence **bs);
+static void reccBinary(CodingTree *tree, BinarySequence **bs);
 
 struct coding_tree_t{
 
@@ -39,7 +39,7 @@ CodingTree* ctCreateLeaf(char c, double frequency){
 
   feuille->frequence = frequency; // contient la fréquence du caractère associé
   feuille->caractere = c;
-  feuille->binary = biseCreate();
+  feuille->binary = NULL;
 
   feuille->left = NULL; //init les enfants à NULL
   feuille->right = NULL;
@@ -137,26 +137,30 @@ BinarySequence** ctCodingTable(const CodingTree* tree){
     free(bs);
     return NULL;
   }
-  reccBinary(tree, bs); //remplit le tableau de pointeurs bs
+  reccBinary((CodingTree*)(tree), bs); //remplit le tableau de pointeurs bs
   return bs;
 }
 
-static void reccBinary(const CodingTree *tree, BinarySequence **bs){
+static void reccBinary(CodingTree *tree, BinarySequence **bs){
+  if(tree->binary == NULL)
+    tree->binary = biseCreate();
 
   if(tree->left != NULL){ // si à gauche on rajoute un 0 à la fin de la sequence
+    tree->left->binary = biseCreate();
     biseAddSequence(tree->left->binary, tree->binary);
     biseAddBit(tree->left->binary, 0);
     reccBinary(tree->left, bs);
   }
 
   if(tree->right != NULL){ // si à droite on rajoute un 1 à la fin de la séquence
+    tree->right->binary = biseCreate();
     biseAddSequence(tree->right->binary, tree->binary);
     biseAddBit(tree->right->binary, 1);
     reccBinary(tree->right, bs);
   }
 
   if(tree->right == NULL && tree->left == NULL){
-    bs[(int)(tree->caractere)] = tree->binary;
+    bs[(size_t)(tree->caractere)] = tree->binary;
     return;
   }
 }
