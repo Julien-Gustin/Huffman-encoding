@@ -70,7 +70,7 @@ bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
   new_cell->next = NULL;
 
   //si la queue est vide ou si l'élément à placer a une priorité supérieure que le premier élément
-  if(A->head == NULL || A->head->priorities >= priorities){
+  if(A->head == NULL || A->head->priorities > priorities){
     if(A->head == NULL){
       A->end = new_cell;
       A->end->next = NULL;
@@ -95,7 +95,7 @@ bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
     current = A->head->next;
     prev = A->head;
 
-		while(priorities > current->priorities){
+		while(priorities >= current->priorities){
       prev = current;
       current = current->next;
     }

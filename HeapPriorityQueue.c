@@ -124,9 +124,6 @@ PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t l
 
   for(size_t i = 0; i < length; i++){ // remplis la queue tel que l'éléments le plus petit est la racine
     if(!pqInsert(pq, entries[i], priorities[i])){
-      while(pqSize(pq)) // la queue n'a pas été construit correctement
-        pqExtractMin(pq);
-
       pqFree(pq);
       return NULL;
     }

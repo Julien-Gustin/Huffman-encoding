@@ -160,6 +160,12 @@ static void reccBinary(CodingTree *tree, BinarySequence **bs){
   }
 
   if(tree->right == NULL && tree->left == NULL){
+    printf("%d ", tree->caractere);
+
+    for(size_t i = 0; i < biseGetNumberOfBits(tree->binary);i++)
+      printf("%d", biseGetBit(tree->binary, i));
+
+    printf("\n");
     bs[(size_t)(tree->caractere)] = tree->binary;
     return;
   }
@@ -173,7 +179,14 @@ Decoded ctDecode(const CodingTree* tree, const BinarySequence* encodedSequence, 
     return test;
   }
 
-  if(biseGetBit(encodedSequence, start) == 0)
+  if(biseGetBit(encodedSequence, start) == ERROR){
+    Decoded d;
+    d.character = '0';
+    d.nextBit = start+1;
+    return d;
+  }
+
+  if(biseGetBit(encodedSequence, start) == ZERO)
     return(ctDecode(tree->left, encodedSequence, start+1));
 
   return(ctDecode(tree->right, encodedSequence, start+1));
