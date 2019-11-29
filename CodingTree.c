@@ -142,7 +142,7 @@ BinarySequence** ctCodingTable(const CodingTree* tree){
 }
 
 static void reccBinary(CodingTree *tree, BinarySequence **bs){
-  if(tree->binary == NULL)
+  if(tree->binary == NULL) // On crée une séquence binaire
     tree->binary = biseCreate();
 
   if(tree->left != NULL){ // si à gauche on rajoute un 0 à la fin de la sequence
