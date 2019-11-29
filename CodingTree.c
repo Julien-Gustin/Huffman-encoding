@@ -160,12 +160,6 @@ static void reccBinary(CodingTree *tree, BinarySequence **bs){
   }
 
   if(tree->right == NULL && tree->left == NULL){
-    printf("%d ", tree->caractere);
-
-    for(size_t i = 0; i < biseGetNumberOfBits(tree->binary);i++)
-      printf("%d", biseGetBit(tree->binary, i));
-
-    printf("\n");
     bs[(size_t)(tree->caractere)] = tree->binary;
     return;
   }
