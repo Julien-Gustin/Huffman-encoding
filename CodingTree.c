@@ -68,7 +68,7 @@ CodingTree* ctHuffman(const double* frequencies){
     return NULL;
   }
 
-  for(size_t i = 0; i < tailleFrequencies; i++){
+  for(size_t i = 0; i < tailleFrequencies; i++){ // O(k)
     racines[i] = ctCreateLeaf((char)(i), frequencies[i]); // crée une racine pour chaque caractère avec sa fréquence
     if(racines[i] == NULL){
       for(size_t j = 0; j <= i; j++)
@@ -78,7 +78,7 @@ CodingTree* ctHuffman(const double* frequencies){
     }
   }
 
-  PriorityQueue *pq = pqCreate((void*)(racines), frequencies, tailleFrequencies); // priotity queue min
+  PriorityQueue *pq = pqCreate((void*)(racines), frequencies, tailleFrequencies); //O(k) priotity queue min,
   if(pq == NULL){
     for(size_t i = 0; i < tailleFrequencies; i++)
       ctFree(racines[i]);
@@ -87,13 +87,23 @@ CodingTree* ctHuffman(const double* frequencies){
     return NULL; //free tab
   }
 
-  for(size_t i = 0; i < tailleFrequencies-1; i++){ // Huffman algorithm
-    CodingTree *leftTree = (CodingTree*)(pqExtractMin(pq));
-    CodingTree *rightTree = (CodingTree*)(pqExtractMin(pq));
+  for(size_t i = 0; i < tailleFrequencies-1; i++){ // Huffman algorithm, O(k-1*3log(k))
+    CodingTree *leftTree = (CodingTree*)(pqExtractMin(pq)); //O(Log k)
+    CodingTree *rightTree = (CodingTree*)(pqExtractMin(pq)); // O(Log k)
 
     CodingTree *z = ctMerge(leftTree, rightTree); // créer une racine avec comme enfants, les 2 elements minimum de la priority queue
-
     if(z == NULL){
+      /* en cas d'ereur */
+      for(size_t j = 0; j < tailleFrequencies; j++)
+        ctFree(racines[j]);
+
+      pqFree(pq);
+      return NULL;
+    }
+    /*_________________*/
+
+    if(!pqInsert(pq, z, z->frequence)){ //on insere la racine cree dans la queue, O(log k)
+      /* en cas d'erreur */
       for(size_t j = 0; j < tailleFrequencies; j++)
         ctFree(racines[j]);
 
@@ -101,11 +111,16 @@ CodingTree* ctHuffman(const double* frequencies){
       pqFree(pq);
       return NULL;
     }
-
-    pqInsert(pq, z, z->frequence); //on insere la racine cree dans la queue
+    /*_________________*/
 
   }
-  CodingTree *returned = (CodingTree*)(pqExtractMin(pq));
+  CodingTree *returned = (CodingTree*)(pqExtractMin(pq)); //O(log k)
+  if(returned == NULL){
+    /* en cas d'erreur */
+    for(size_t j = 0; j < tailleFrequencies; j++)
+      ctFree(racines[j]);
+      /*_________________*/
+  }
 
   free(racines);
   pqFree(pq);
@@ -167,10 +182,10 @@ static void reccBinary(CodingTree *tree, BinarySequence **bs){
 
 Decoded ctDecode(const CodingTree* tree, const BinarySequence* encodedSequence, size_t start){
   if(tree->left == NULL && tree->right == NULL){
-    Decoded test;
-    test.character = tree->caractere;
-    test.nextBit = start;
-    return test;
+    Decoded d;
+    d.character = tree->caractere;
+    d.nextBit = start;
+    return d;
   }
 
   if(biseGetBit(encodedSequence, start) == ERROR){

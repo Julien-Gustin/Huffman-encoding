@@ -89,45 +89,29 @@ static inline size_t Right(size_t i){
 }
 
 static inline size_t Parent(size_t i){
-  if(i == 0)
-    printf("ERREUR\n");
-
   return (i/2);
 
 }
 
-static inline void swap(void **array, size_t i, size_t j){
+static inline void swap(void **array, size_t i, size_t j){ //k log k
   void *tmp = array[i];
   array[i] = array[j];
   array[j] = tmp;
 }
 
-PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t length){
+PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t length){ //O(k)
   PriorityQueue *pq = malloc(sizeof(PriorityQueue));
   if(pq == NULL)
     return NULL;
 
-  pq->entries = malloc(sizeof(void*)*length); // aloue de la mémoire pour un tableau de pointeur sur void
-  if(pq->entries == NULL){
-    pqFree(pq);
-    return NULL;
-  }
-
-  pq->priorities = malloc(sizeof(double)*length); // aloue de la mémoire pour un tableau de priorities
-  if(pq->priorities == NULL){
-    pqFree(pq);
-    return NULL;
-  }
-
-  pq->heap_size = 0;
+  pq->heap_size = length;
   pq->length = length;
+  pq->entries = (void**)(entries);
+  pq->priorities = (double*)(priorities);
 
-  for(size_t i = 0; i < length; i++){ // remplis la queue tel que l'éléments le plus petit est la racine
-    if(!pqInsert(pq, entries[i], priorities[i])){
-      pqFree(pq);
-      return NULL;
-    }
-  }
+  for(long j = length/2; j > 0; j--) // O(k) ( voir formule )
+    Min_Heapify(pq, j); //O(log(k))
+
   return pq;
 }
 
@@ -153,8 +137,6 @@ bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
 }
 
 void pqFree(PriorityQueue* pQueue){
-  free(pQueue->entries);
-  free(pQueue->priorities);
   free(pQueue);
   return;
 }
@@ -165,7 +147,7 @@ const void* pqExtractMin(PriorityQueue* pQueue){
     return NULL; //underflow
   }
 
-  void* min = pQueue->entries[0];
+  const void* min = pQueue->entries[0];
   pQueue->entries[0] = pQueue->entries[pqSize(pQueue)-1];
   pQueue->priorities[0] = pQueue->priorities[pqSize(pQueue)-1];
 

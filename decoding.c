@@ -8,11 +8,11 @@ bool decode(const BinarySequence* source, CharVector* dest, const CodingTree* tr
 
   while(tmp.nextBit < biseGetNumberOfBits(source)){ //traduit une séquance de bit
     tmp = ctDecode(tree, source, tmp.nextBit); // traduit une sequence de bit jusqu'à ce quand la suite de bit mène à un character
-    
+
     if(tmp.character == eof)
       return 1;
 
     cvAdd(dest, tmp.character);
   }
-    return 1;
+    return 0;
 }
