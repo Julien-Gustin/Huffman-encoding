@@ -11,13 +11,7 @@
 /* Opaque structure */
 typedef struct priority_queue_t PriorityQueue;
 
-typedef struct list_t List;
 
-
-double get_priorities(List *list);
-List* get_next(List *list);
-List* get_head(PriorityQueue *pq);
-List* get_end(PriorityQueue *pq);
 /* ------------------------------------------------------------------------- *
  * Build a priority queue with the given entries. The capacity of the queue
  * will bounded by the given number of entries.

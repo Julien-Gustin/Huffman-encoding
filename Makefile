@@ -1,5 +1,5 @@
 CC=@ gcc
-CFLAGS=--std=c99 --pedantic -Wall -Wextra -Wmissing-prototypes -g
+CFLAGS=--std=c99 --pedantic -Wall -Wextra -Wmissing-prototypes -O3 -g
 LD=@ gcc
 LDFLAGS=
 
@@ -47,19 +47,10 @@ CharVector.o: CharVector.c
 	$(CC) -c CharVector.c -o CharVector.o $(CFLAGS)
 
 c:	$(EXEC)
-	valgrind --leak-check=full ./$(EXEC) -e -o encodage.txt Alice_in_worderland_Lewis_Carroll.ascii freq.csv
+	./$(EXEC) -e -o encodage.txt Alice_in_worderland_Lewis_Carroll.ascii freq.csv
 
 d:	$(EXEC)
-	valgrind --leak-check=full ./$(EXEC) -o traduction.txt encodage.txt freq.csv
-
-
-#########" Pour tester à valeur fixe"
-#c:	$(EXEC)
-#	valgrind --leak-check=full ./$(EXEC) -e -o encodage2.txt Alice_in_worderland_Lewis_Carroll.ascii freq2.csv
-
-
-#d:	$(EXEC)
-#	valgrind --leak-check=full ./$(EXEC) -o traduction2.txt encodage2.txt freq2.csv
+	 ./$(EXEC) -o traduction.txt encodage.txt freq.csv
 
 
 clean:

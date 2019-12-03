@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
 
@@ -181,7 +180,7 @@ static void reccBinary(CodingTree *tree, BinarySequence **bs){
 }
 
 Decoded ctDecode(const CodingTree* tree, const BinarySequence* encodedSequence, size_t start){
-  if(tree->left == NULL && tree->right == NULL){
+  if(tree->left == NULL){
     Decoded d;
     d.character = tree->caractere;
     d.nextBit = start;

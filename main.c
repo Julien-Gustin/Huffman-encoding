@@ -203,7 +203,6 @@ static bool readAndDecode(const char* inputpath, const CodingTree* tree,
 
     biseFree(source);
     cvFree(dest);
-    //printf("%ld %ld\n", biseGetNumberOfBits(source), cvSize(dest));
     fclose(output);
     return success;
 }
@@ -225,7 +224,6 @@ static bool readAndDecode(const char* inputpath, const CodingTree* tree,
 static bool readAndEncode(const char* inputpath, const CodingTree* tree,
                           const char* outptPath, bool debug, unsigned char eof)
 {
-
     FILE* output = (!outptPath)? stdout: fopen(outptPath, "wb");
 
     bool success = true;
@@ -374,13 +372,12 @@ int main(int argc, char** argv)
     bool success;
     if(decode)
         success = readAndDecode(textPath, huffmanTree, outputPath, eofChar);
-
     else
         success = readAndEncode(textPath, huffmanTree, outputPath, debug, eofChar);
 
+
     free(frequencies);
     ctFree(huffmanTree);
-
     if(!success)
     {
         fprintf(stderr, "Some error occured. Aborting.\n");

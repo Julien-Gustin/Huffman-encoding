@@ -1,9 +1,10 @@
-//Liste MIN
-#include <stdio.h>
+
 #include <stdlib.h>
 #include <stddef.h>
 
 #include "PriorityQueue.h"
+
+typedef struct list_t List;
 
 struct list_t{
   const void *entries;
@@ -16,22 +17,6 @@ struct priority_queue_t{
   List *end; /* pointeur vers la dernière cellule de la liste*/
   size_t length;
 };
-
-double get_priorities(List *list){
-   return list->priorities;
-}
-
-List* get_next(List *list){
-   return list->next;;
-}
-
-List* get_head(PriorityQueue *pq){
-   return pq->head;
-}
-
-List* get_end(PriorityQueue *pq){
-   return pq->end;
-}
 
 PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t length){
 

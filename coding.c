@@ -2,9 +2,8 @@
 
 bool encode(const CharVector* source, BinarySequence* dest, const CodingTree* tree, unsigned char eof) {
     BinarySequence** table = ctCodingTable(tree);
-    if(!table){
+    if(!table)
         return false;
-      }
 
     bool success = true;
     char c;
@@ -14,7 +13,7 @@ bool encode(const CharVector* source, BinarySequence* dest, const CodingTree* tr
             continue;
         success &= biseAddSequence(dest, table[(size_t)c]);
     }
-    //ctPrint(tree, 0, "test");
+
     // add end of file code
     success &= biseAddSequence(dest, table[eof]);
 
