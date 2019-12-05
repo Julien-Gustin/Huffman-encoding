@@ -1,5 +1,5 @@
 CC=@ gcc
-CFLAGS=--std=c99 --pedantic -Wall -Wextra -Wmissing-prototypes -O3 -g
+CFLAGS=--std=c99 --pedantic -Wall -Wextra -Wmissing-prototypes -g -O3
 LD=@ gcc
 LDFLAGS=
 
@@ -47,11 +47,16 @@ CharVector.o: CharVector.c
 	$(CC) -c CharVector.c -o CharVector.o $(CFLAGS)
 
 c:	$(EXEC)
-	./$(EXEC) -e -o encodage.txt Alice_in_worderland_Lewis_Carroll.ascii freq.csv
+	valgrind --track-origins=yes ./$(EXEC) -e -o encodage.txt Alice_in_worderland_Lewis_Carroll.ascii freq.csv
 
 d:	$(EXEC)
 	 ./$(EXEC) -o traduction.txt encodage.txt freq.csv
 
+c2:	$(EXEC)
+	valgrind --leak-check=full ./$(EXEC) -e -o encodage.txt Alice_in_worderland_Lewis_Carroll.ascii freq2.csv
+
+d2:	$(EXEC)
+	./$(EXEC) -o traduction.txt encodage.txt freq2.csv
 
 clean:
 	rm -f *.o $(EXEC) *~

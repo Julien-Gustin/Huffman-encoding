@@ -97,18 +97,37 @@ static inline void swap(void **array, size_t i, size_t j){ //k log k
   array[j] = tmp;
 }
 
+// PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t length){ //O(k)
+//   // if(priorities == NULL || entries == NULL)
+//   //   return NULL;
+//
+//   PriorityQueue *pq = malloc(sizeof(PriorityQueue));
+//   if(pq == NULL)
+//     return NULL;
+//
+//   pq->heap_size = length;
+//   pq->length = length;
+//   pq->entries = (void**)(entries);
+//   pq->priorities = (double*)(priorities);
+//
+//   for(long j = (length/2); j >= 0; j--) // O(k) ( voir formule )
+//     Min_Heapify(pq, j); //O(log(k))
+//
+//   return pq;
+// }
+
 PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t length){ //O(k)
   PriorityQueue *pq = malloc(sizeof(PriorityQueue));
   if(pq == NULL)
     return NULL;
 
-  pq->heap_size = length;
+  pq->heap_size = 0;
   pq->length = length;
-  pq->entries = (void**)(entries);
-  pq->priorities = (double*)(priorities);
+  pq->entries = malloc(sizeof(void *)*length);
+  pq->priorities = malloc(sizeof(double)*length);
 
-  for(long j = length/2; j > 0; j--) // O(k) ( voir formule )
-    Min_Heapify(pq, j); //O(log(k))
+  for(size_t j = 0; j < length; j++) // O(k) ( voir formule )
+    pqInsert(pq, entries[j], priorities[j]);
 
   return pq;
 }
@@ -117,7 +136,19 @@ bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
   A->heap_size++;
 
   if(A->heap_size > A->length){
-    return false;
+
+    if(A->length == 0)
+      A->length++;
+
+    A->length*=2;
+
+    A->entries = realloc(A->entries, sizeof(void*)*(A->length));
+    if(A->entries == NULL)
+      return false;
+
+    A->priorities = realloc(A->priorities, sizeof(double)*(A->length));
+    if(A->priorities == NULL)
+      return false;
   }
 
   size_t i = pqSize(A)-1;
@@ -135,6 +166,8 @@ bool pqInsert(PriorityQueue *A, const void* entry, double priorities){
 }
 
 void pqFree(PriorityQueue* pQueue){
+  free(pQueue->entries);
+  free(pQueue->priorities);
   free(pQueue);
   return;
 }

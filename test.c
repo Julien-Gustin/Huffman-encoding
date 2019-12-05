@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 
 #include "CodingTree.h"
 #include "CharVector.h"
@@ -191,8 +192,17 @@ static bool readAndDecode(const char* inputpath, const CodingTree* tree,
         success = false;
     }
 
+    const size_t TEST_SIZE = 100;
+    float moyenne = 0;
 
-    success = success && decode(source, dest, tree, eof);
+    for(unsigned i = 0; i < TEST_SIZE; i++){
+        clock_t startTime = clock();
+        success = success && decode(source, dest, tree, eof);
+        moyenne += ((double)(clock() - startTime)) / CLOCKS_PER_SEC;
+    }
+
+    moyenne /= (float) TEST_SIZE;
+    printf("Moyenne : %f\n", moyenne);
 
     if(!success)
         fprintf(stderr, "Could not decode binary sequence from file '%s'.\n",
@@ -373,6 +383,7 @@ int main(int argc, char** argv)
     bool success;
     if(decode)
         success = readAndDecode(textPath, huffmanTree, outputPath, eofChar);
+
     else
         success = readAndEncode(textPath, huffmanTree, outputPath, debug, eofChar);
 

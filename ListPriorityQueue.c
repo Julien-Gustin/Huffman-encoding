@@ -99,6 +99,7 @@ const void* pqExtractMin(PriorityQueue* pQueue){
   List *min;
 
   min = pQueue->head;
+  pQueue->length--;
 
   pQueue->head = min->next;
 
