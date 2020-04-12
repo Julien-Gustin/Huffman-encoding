@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <stddef.h>
 
 #include "CodingTree.h"
@@ -78,7 +77,7 @@ CodingTree* ctHuffman(const double* frequencies){
     }
   }
 
-  PriorityQueue *pq = pqCreate((void*)(racines), frequencies, tailleFrequencies); //O(klogk) priotity queue min,
+  PriorityQueue *pq = pqCreate((void*)(racines), frequencies, tailleFrequencies); //O(k) priotity queue min,
   if(pq == NULL){
     for(size_t i = 0; i < tailleFrequencies; i++)
       ctFree(racines[i]);
@@ -176,16 +175,12 @@ static void reccBinary(CodingTree *tree, BinarySequence **bs){
 
   if(tree->right == NULL && tree->left == NULL){
     bs[(size_t)(tree->caractere)] = tree->binary;
-    // printf("\n char : %d :", tree->caractere);
-    // for(size_t i = 0; i < biseGetNumberOfBits(tree->binary); i++)
-    //   printf("%d", biseGetBit(tree->binary, i));
-
     return;
   }
 }
 
 Decoded ctDecode(const CodingTree* tree, const BinarySequence* encodedSequence, size_t start){
-  if(tree->left == NULL){
+  if(tree->left == NULL && tree->right == NULL){
     Decoded d;
     d.character = tree->caractere;
     d.nextBit = start;

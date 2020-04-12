@@ -191,7 +191,6 @@ static bool readAndDecode(const char* inputpath, const CodingTree* tree,
         success = false;
     }
 
-
     success = success && decode(source, dest, tree, eof);
 
     if(!success)

@@ -97,25 +97,6 @@ static inline void swap(void **array, size_t i, size_t j){ //k log k
   array[j] = tmp;
 }
 
-// PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t length){ //O(k)
-//   // if(priorities == NULL || entries == NULL)
-//   //   return NULL;
-//
-//   PriorityQueue *pq = malloc(sizeof(PriorityQueue));
-//   if(pq == NULL)
-//     return NULL;
-//
-//   pq->heap_size = length;
-//   pq->length = length;
-//   pq->entries = (void**)(entries);
-//   pq->priorities = (double*)(priorities);
-//
-//   for(long j = (length/2); j >= 0; j--) // O(k) ( voir formule )
-//     Min_Heapify(pq, j); //O(log(k))
-//
-//   return pq;
-// }
-
 PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t length){ //O(k)
   PriorityQueue *pq = malloc(sizeof(PriorityQueue));
   if(pq == NULL)
@@ -124,7 +105,12 @@ PriorityQueue* pqCreate(const void** entries, const double* priorities, size_t l
   pq->heap_size = 0;
   pq->length = length;
   pq->entries = malloc(sizeof(void *)*length);
+  if(pq->entries == NULL)	
+    return NULL;
+
   pq->priorities = malloc(sizeof(double)*length);
+  if(pq->priorities == NULL)
+    return NULL;
 
   for(size_t j = 0; j < length; j++) // O(k) ( voir formule )
     pqInsert(pq, entries[j], priorities[j]);
