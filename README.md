@@ -14,4 +14,5 @@
 ### NB
 * ###### The encoding file will be in the Repectory ../Encode
 * ###### The decoding file will be in the Repectory ../Decode
-* ###### If you want to encode/decode your own txt file just let your file in ../source and then replace the FILENAME in the makefile by your file.txt
+* ###### If you want to encode/decode your own txt/ascii file just let your file in ../source and then replace the FILENAME in the makefile by your file
+
